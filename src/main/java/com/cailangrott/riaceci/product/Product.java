@@ -41,6 +41,6 @@ public class Product {
     @Column(name = "image", nullable = false)
     private String image;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<OrderItem> orderitems = new LinkedHashSet<>();
 }

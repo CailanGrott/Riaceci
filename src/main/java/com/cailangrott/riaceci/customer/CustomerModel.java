@@ -49,6 +49,6 @@ public class CustomerModel {
     @Enumerated(EnumType.STRING)
     private CustomerType customerType;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
     private Set<Order> orders = new LinkedHashSet<>();
 }

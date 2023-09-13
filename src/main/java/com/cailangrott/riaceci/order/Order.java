@@ -35,6 +35,8 @@ public class Order {
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerModel customer;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.REMOVE)
     private Set<OrderItem> orderItems = new LinkedHashSet<>();
 }

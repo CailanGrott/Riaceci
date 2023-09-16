@@ -17,3 +17,8 @@ spring:
     redis:
       host: localhost
       port: 8080
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:my-secret-key}

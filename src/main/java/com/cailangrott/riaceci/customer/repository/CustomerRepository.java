@@ -9,6 +9,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface CustomerRepository extends JpaRepository<CustomerModel, Integer> {
     @Transactional
@@ -25,4 +28,8 @@ public interface CustomerRepository extends JpaRepository<CustomerModel, Integer
     void updateCustomerById(@Nullable @Param("name") String name, @Nullable @Param("cnpj") String cnpj,
                             @Nullable @Param("email") String email, @Nullable @Param("customer_type") String customerType,
                             @Param("customerId") Integer customerId);
+
+    CustomerModel findUsernameByCnpj(String username);
+
+    Optional<CustomerModel> findCustomerByCnpj(String cnpj);
 }

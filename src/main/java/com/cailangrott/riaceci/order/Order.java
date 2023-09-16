@@ -36,7 +36,6 @@ public class Order {
     private CustomerModel customer;
 
     @OneToMany(mappedBy = "order",
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.REMOVE)
+            fetch = FetchType.EAGER)
     private Set<OrderItem> orderItems = new LinkedHashSet<>();
 }

@@ -34,7 +34,7 @@ public class ProductService {
             return products;
         }
 
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException("");
     }
 
     public Iterable<FindAllProductsOutput> findAllProducts() {
@@ -44,13 +44,13 @@ public class ProductService {
     }
 
     public void deleteProduct(Integer id) throws ResourceAccessException {
-        var productReturn = productRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        var productReturn = productRepository.findById(id).orElseThrow();
         productRepository.delete(productReturn);
     }
 
     public void updateProduct(Integer id, UpdateProductOutput updateProductOutput) throws ResourceNotFoundException {
         var productReturn = validateProductAttributesUpdate(updateProductOutput,
-                productRepository.findById(id).orElseThrow(ResourceNotFoundException::new));
+                productRepository.findById(id).orElseThrow());
         productRepository.updateProductById(productReturn.getName(),
                 productReturn.getDescription(),
                 productReturn.getPrice(),

@@ -1,11 +1,13 @@
 package com.cailangrott.riaceci.order.service;
 
+import com.cailangrott.riaceci.customer.dto.FindCustomerByCnpj;
 import com.cailangrott.riaceci.customer.service.CustomerService;
 import com.cailangrott.riaceci.exception.ResourceNotFoundException;
 import com.cailangrott.riaceci.order.Order;
 import com.cailangrott.riaceci.order.OrderItem;
 import com.cailangrott.riaceci.order.dto.CreateNewOrder;
 import com.cailangrott.riaceci.order.dto.GetOrderById;
+import com.cailangrott.riaceci.order.dto.GetOrdersByCustomerCnpj;
 import com.cailangrott.riaceci.order.mapper.OrderMapper;
 import com.cailangrott.riaceci.order.repository.OrderRepository;
 import com.cailangrott.riaceci.product.service.ProductService;
@@ -16,6 +18,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+
+import static com.cailangrott.riaceci.order.mapper.OrderMapper.mapToGetOrdersByCnpjResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +50,7 @@ public class OrderService {
     }
 
     public BigDecimal calculateTotalOrderValue(Integer orderId) throws ResourceNotFoundException {
-        Order order = orderRepository.findById(orderId).orElseThrow(ResourceNotFoundException::new);
+        Order order = orderRepository.findById(orderId).orElseThrow();
         return order.getOrderItems().stream()
                 .map(OrderItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -60,7 +65,7 @@ public class OrderService {
     public GetOrderById findOrderById(Integer id) throws ResourceNotFoundException {
         var orderDto = orderRepository.findOrderByIdTest(id)
                 .map(OrderMapper::mapToGetOrderById)
-                .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow();
 
         BigDecimal totalValue = calculateTotalOrderValue(orderDto.items());
 
@@ -74,6 +79,15 @@ public class OrderService {
                 orderDto.customerType(),
                 orderDto.items(),
                 totalValue);
+    }
+
+    public GetOrdersByCustomerCnpj findOrdersByCnpj(String cnpj) {
+        List<Order> orders = orderRepository.findOrdersByCustomerCnpj(cnpj);
+
+        FindCustomerByCnpj customer = Optional.ofNullable(customerService.findCustomerByCnpj(cnpj))
+                .orElseThrow(() -> new ResourceNotFoundException("No customer found with the CNPJ: " + cnpj));
+
+        return mapToGetOrdersByCnpjResponseDto(customer, orders);
     }
 
     private Integer getProductQuantity(CreateNewOrder order, Integer id) {

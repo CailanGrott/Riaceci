@@ -5,11 +5,11 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.ErrorResponseException;
 
 public class ResourceNotFoundException extends ErrorResponseException {
-    public ResourceNotFoundException() {
-        super(HttpStatus.NOT_FOUND, construirProblemDetail(), null);
+    public ResourceNotFoundException(String message) {
+        super(HttpStatus.NOT_FOUND, buildProblemDetail(message), null);
     }
 
-    private static ProblemDetail construirProblemDetail() {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Product not found");
+    private static ProblemDetail buildProblemDetail(String detail) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, detail);
     }
 }

@@ -4,6 +4,7 @@ import com.cailangrott.riaceci.customer.dto.AddNewCustomerInput;
 import com.cailangrott.riaceci.customer.dto.AddNewCustomerOutput;
 import com.cailangrott.riaceci.customer.dto.FindAllCustomerDTO;
 import com.cailangrott.riaceci.customer.CustomerModel;
+import com.cailangrott.riaceci.customer.dto.FindCustomerByCnpj;
 import com.cailangrott.riaceci.customer.enums.CustomerType;
 
 public class CustomerMapper {
@@ -46,4 +47,15 @@ public class CustomerMapper {
                 .customerType(CustomerType.fromStringIgnoreCase(addNewCustomerOutput.customerType()))
                 .build();
     }
+
+    public static FindCustomerByCnpj mapCustomerToFindCustomerByCnpj(CustomerModel customer) {
+        return FindCustomerByCnpj.builder()
+                .id(customer.getId())
+                .name(customer.getName())
+                .cnpj(customer.getCnpj())
+                .email(customer.getEmail())
+                .customerType(customer.getCustomerType())
+                .build();
+    }
+
 }

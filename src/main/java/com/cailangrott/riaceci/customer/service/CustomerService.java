@@ -4,36 +4,71 @@ import com.cailangrott.riaceci.customer.CustomerModel;
 import com.cailangrott.riaceci.customer.dto.*;
 import com.cailangrott.riaceci.customer.mapper.CustomerMapper;
 import com.cailangrott.riaceci.customer.repository.CustomerRepository;
+import com.cailangrott.riaceci.exception.CustomerAlreadyExistsException;
 import com.cailangrott.riaceci.exception.ResourceNotFoundException;
+import com.cailangrott.riaceci.user.repositories.UserRepository;
+import com.cailangrott.riaceci.user.user.User;
+import com.cailangrott.riaceci.user.user.UserRole;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    public AddNewCustomerInput addNewCustomer(AddNewCustomerOutput addNewCustomerOutput) {
+    public AddNewCustomerInput addNewCustomer(AddNewCustomerOutput addNewCustomerOutput) throws CustomerAlreadyExistsException {
+        Optional.ofNullable(customerRepository.findCustomerByCnpj(addNewCustomerOutput.cnpj()))
+                .ifPresent(existingCustomer -> {
+                    throw new CustomerAlreadyExistsException(
+                            HttpStatus.CONFLICT,
+                            "Cliente já existe",
+                            "Cliente já existe com CNPJ: " + addNewCustomerOutput.cnpj()
+                    );
+                });
+
         CustomerModel customer = CustomerMapper.mapDtoToCustomer(addNewCustomerOutput);
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        customer.setRole(UserRole.USER);
         customer = customerRepository.saveAndFlush(customer);
+
+        createUserFromCustomer(customer);
+
         return CustomerMapper.mapCustomerToNewCustomerDTO(customer);
     }
 
     public CustomerModel findCustomerById(Integer id) throws ResourceNotFoundException {
         return customerRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Cliente não encontrado",
+                        "Nenhum cliente encontrado com o ID: " + id));
     }
 
     public FindCustomerByCnpj findCustomerByCnpj(String cnpj) throws ResourceNotFoundException {
-        CustomerModel customer = customerRepository.findCustomerByCnpj(cnpj)
-                .orElseThrow(() -> new ResourceNotFoundException("No customer found with the CNPJ: " + cnpj));
+        CustomerModel customer = customerRepository.findOptionalCustomerByCnpj(cnpj)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Cliente não encontrado",
+                        "Nenhum cliente encontrado com o CNPJ: " + cnpj));
 
         return CustomerMapper.mapCustomerToFindCustomerByCnpj(customer);
+    }
+
+    public FindCustomerByName findCustomerByName(String name) throws ResourceNotFoundException {
+        CustomerModel customer = customerRepository.findCustomerByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Cliente não encontrado",
+                        "Nenhum cliente encontrado com o nome: " + name));
+        return CustomerMapper.mapCustomerToFindCustomerByName(customer);
     }
 
     public Iterable<FindAllCustomerDTO> findAllCustomer() {
@@ -44,7 +79,11 @@ public class CustomerService {
 
     public void deleteCustomer(Integer id) throws ResourceNotFoundException {
         var customerReturn = customerRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Cliente não encontrado",
+                        "Nenhum cliente encontrado com o ID: " + id));
+
         customerRepository.delete(customerReturn);
     }
 
@@ -65,5 +104,10 @@ public class CustomerService {
                 .email(updateCustomerDTO.email().isBlank() ? customer.getEmail() : updateCustomerDTO.email())
                 .customerType(updateCustomerDTO.customerType() == null ? customer.getCustomerType() : updateCustomerDTO.customerType())
                 .build();
+    }
+
+    private void createUserFromCustomer(CustomerModel customer) {
+        User user = new User(customer.getCnpj(), customer.getPassword(), customer.getRole());
+        userRepository.save(user);
     }
 }

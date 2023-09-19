@@ -1,10 +1,7 @@
 package com.cailangrott.riaceci.customer.mapper;
 
-import com.cailangrott.riaceci.customer.dto.AddNewCustomerInput;
-import com.cailangrott.riaceci.customer.dto.AddNewCustomerOutput;
-import com.cailangrott.riaceci.customer.dto.FindAllCustomerDTO;
+import com.cailangrott.riaceci.customer.dto.*;
 import com.cailangrott.riaceci.customer.CustomerModel;
-import com.cailangrott.riaceci.customer.dto.FindCustomerByCnpj;
 import com.cailangrott.riaceci.customer.enums.CustomerType;
 
 public class CustomerMapper {
@@ -50,6 +47,16 @@ public class CustomerMapper {
 
     public static FindCustomerByCnpj mapCustomerToFindCustomerByCnpj(CustomerModel customer) {
         return FindCustomerByCnpj.builder()
+                .id(customer.getId())
+                .name(customer.getName())
+                .cnpj(customer.getCnpj())
+                .email(customer.getEmail())
+                .customerType(customer.getCustomerType())
+                .build();
+    }
+
+    public static FindCustomerByName mapCustomerToFindCustomerByName(CustomerModel customer) {
+        return FindCustomerByName.builder()
                 .id(customer.getId())
                 .name(customer.getName())
                 .cnpj(customer.getCnpj())

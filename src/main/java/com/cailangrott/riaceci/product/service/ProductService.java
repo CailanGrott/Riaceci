@@ -9,11 +9,13 @@ import com.cailangrott.riaceci.product.dto.UpdateProductOutput;
 import com.cailangrott.riaceci.product.mapper.ProductMapper;
 import com.cailangrott.riaceci.product.repository.ProductRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static com.cailangrott.riaceci.product.mapper.ProductMapper.*;
 
@@ -30,11 +32,13 @@ public class ProductService {
     public Iterable<Product> findAllProductsById(Collection<Integer> productIds) throws ResourceNotFoundException {
         final List<Product> products = productRepository.findAllById(productIds);
 
-        if (!products.isEmpty()) {
-            return products;
-        }
-
-        throw new ResourceNotFoundException("");
+        return Optional.of(products)
+                .filter(product -> !product.isEmpty())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Produtos não encontrados",
+                        "Nenhum produto encontrado com os IDs fornecidos"
+                ));
     }
 
     public Iterable<FindAllProductsOutput> findAllProducts() {
@@ -43,8 +47,13 @@ public class ProductService {
                 .toList();
     }
 
-    public void deleteProduct(Integer id) throws ResourceAccessException {
-        var productReturn = productRepository.findById(id).orElseThrow();
+    public void deleteProduct(Integer id) throws ResourceNotFoundException {
+        var productReturn = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Produto não encontrado",
+                        "Nenhum produto encontrado com o ID: " + id
+                ));
         productRepository.delete(productReturn);
     }
 

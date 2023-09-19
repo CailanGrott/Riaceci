@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/customer")
@@ -24,13 +27,17 @@ public class CustomerController {
     @GetMapping("/find-customers")
     public ResponseEntity<Iterable<FindAllCustomerDTO>> findAllCustomer() {
         Iterable<FindAllCustomerDTO> findAllCustomerDTO = customerService.findAllCustomer();
-        return new ResponseEntity<>(findAllCustomerDTO, HttpStatus.OK);
+        return ResponseEntity.ok(findAllCustomerDTO);
     }
 
     @GetMapping("/find-by-cnpj/{cnpj}")
     public ResponseEntity<FindCustomerByCnpj> findCustomerByCnpj(@PathVariable("cnpj") String cnpj) throws ResourceNotFoundException {
-        FindCustomerByCnpj customer = customerService.findCustomerByCnpj(cnpj);
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+        return ResponseEntity.ok(customerService.findCustomerByCnpj(cnpj));
+    }
+
+    @GetMapping("/find-by-name/{name}")
+    public ResponseEntity<FindCustomerByName> findCustomerByName(@PathVariable("name") String name) throws ResourceNotFoundException {
+        return ResponseEntity.ok(customerService.findCustomerByName(name));
     }
 
     @DeleteMapping("/delete-customer/id/{id}")

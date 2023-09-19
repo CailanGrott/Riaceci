@@ -12,6 +12,7 @@ import com.cailangrott.riaceci.order.mapper.OrderMapper;
 import com.cailangrott.riaceci.order.repository.OrderRepository;
 import com.cailangrott.riaceci.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -50,7 +51,13 @@ public class OrderService {
     }
 
     public BigDecimal calculateTotalOrderValue(Integer orderId) throws ResourceNotFoundException {
-        Order order = orderRepository.findById(orderId).orElseThrow();
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Pedido não encontrado",
+                        "Nenhum pedido encontrado com o ID: " + orderId
+                ));
+
         return order.getOrderItems().stream()
                 .map(OrderItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -65,7 +72,10 @@ public class OrderService {
     public GetOrderById findOrderById(Integer id) throws ResourceNotFoundException {
         var orderDto = orderRepository.findOrderByIdTest(id)
                 .map(OrderMapper::mapToGetOrderById)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Pedido não encontrado",
+                        "Nenhum pedido encontrado com o ID: " + id));
 
         BigDecimal totalValue = calculateTotalOrderValue(orderDto.items());
 
@@ -85,7 +95,11 @@ public class OrderService {
         List<Order> orders = orderRepository.findOrdersByCustomerCnpj(cnpj);
 
         FindCustomerByCnpj customer = Optional.ofNullable(customerService.findCustomerByCnpj(cnpj))
-                .orElseThrow(() -> new ResourceNotFoundException("No customer found with the CNPJ: " + cnpj));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Cliente não encontrado",
+                        "Nenhum cliente encontrado com o CNPJ: " + cnpj
+                ));
 
         return mapToGetOrdersByCnpjResponseDto(customer, orders);
     }

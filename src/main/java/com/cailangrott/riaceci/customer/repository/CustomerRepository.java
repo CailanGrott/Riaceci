@@ -31,5 +31,9 @@ public interface CustomerRepository extends JpaRepository<CustomerModel, Integer
 
     CustomerModel findUsernameByCnpj(String username);
 
-    Optional<CustomerModel> findCustomerByCnpj(String cnpj);
+    Optional<CustomerModel> findOptionalCustomerByCnpj(String cnpj);
+
+    CustomerModel findCustomerByCnpj(String cnpj);
+
+    Optional<CustomerModel> findCustomerByName(String name);
 }

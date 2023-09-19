@@ -2,6 +2,7 @@ package com.cailangrott.riaceci.customer;
 
 import com.cailangrott.riaceci.customer.enums.CustomerType;
 import com.cailangrott.riaceci.order.Order;
+import com.cailangrott.riaceci.user.user.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -42,6 +43,10 @@ public class CustomerModel {
     @NotNull
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private UserRole role;
 
     @Column(name = "customer_type")
     @Enumerated(EnumType.STRING)

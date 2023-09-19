@@ -6,6 +6,7 @@ import com.cailangrott.riaceci.order.dto.GetOrderById;
 import com.cailangrott.riaceci.order.dto.GetOrdersByCustomerCnpj;
 import com.cailangrott.riaceci.order.dto.GetOrdersByCustomerName;
 import com.cailangrott.riaceci.order.service.OrderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class OrderController {
     @PostMapping("/new-order")
     public ResponseEntity<?> addNewOrder(@RequestBody CreateNewOrder newOrder) throws ResourceNotFoundException {
         orderService.addNewOrder(newOrder);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
     }
 
     @GetMapping("find-order/id/{id}")
@@ -34,8 +35,7 @@ public class OrderController {
 
     @GetMapping("/find-order-by-cnpj/{cnpj}")
     public ResponseEntity<GetOrdersByCustomerCnpj> getOrdersByCnpj(@PathVariable String cnpj) {
-        GetOrdersByCustomerCnpj response = orderService.findOrdersByCnpj(cnpj);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(orderService.findOrdersByCnpj(cnpj));
     }
 
 }

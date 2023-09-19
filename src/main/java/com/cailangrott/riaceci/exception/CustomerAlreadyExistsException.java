@@ -9,9 +9,9 @@ import java.time.Instant;
 
 import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 
-public class ResourceNotFoundException extends ErrorResponseException {
+public class CustomerAlreadyExistsException extends ErrorResponseException {
 
-    public ResourceNotFoundException(HttpStatusCode status, String titulo, String detalhe) {
+    public CustomerAlreadyExistsException(HttpStatusCode status, String titulo, String detalhe) {
         super(status, construirProblemDetail(status, detalhe, titulo), null);
     }
 

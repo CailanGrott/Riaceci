@@ -23,7 +23,7 @@ public class AuthorizationService implements UserDetailsService {
         return Optional.ofNullable(userRepository.findByLogin(username))
                 .orElseGet(() ->
                         Optional.ofNullable(customerRepository.findUsernameByCnpj(username))
-                                .map(customer -> new User(customer.getCnpj(), customer.getPassword(), UserRole.USER))
+                                .map(customer -> new User(customer.getCnpj(), customer.getPassword(), customer.getRole()))
                                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username or cnpj: " + username))
                 );
     }

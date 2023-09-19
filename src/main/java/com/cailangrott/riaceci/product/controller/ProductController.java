@@ -26,7 +26,7 @@ public class ProductController {
     @GetMapping("/find-products")
     public ResponseEntity<Iterable<FindAllProductsOutput>> findAllProducts() {
         Iterable<FindAllProductsOutput> findAllProductsDTO = productService.findAllProducts();
-        return new ResponseEntity<>(findAllProductsDTO, HttpStatus.OK);
+        return ResponseEntity.ok(findAllProductsDTO);
     }
 
     @DeleteMapping("/delete-product/id/{id}")

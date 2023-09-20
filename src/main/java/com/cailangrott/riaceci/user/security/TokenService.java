@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.cailangrott.riaceci.customer.CustomerModel;
 import com.cailangrott.riaceci.user.user.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,25 @@ public class TokenService {
             String token = JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getLogin())
+                    .withExpiresAt(genExpirationDate())
+                    .sign(algorithm);
+            return token;
+        } catch (JWTCreationException exception) {
+            throw new RuntimeException("Error while generating token", exception);
+        }
+    }
+
+    public String generateTokenForCustomer(CustomerModel customer) {
+        try{
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            String token = JWT.create()
+                    .withIssuer("auth-api")
+                    .withClaim("id", customer.getId())
+                    .withClaim("cnpj", customer.getCnpj())
+                    .withClaim("role", customer.getRole().getDescription())
+                    .withSubject(customer.getName())
+                    .withSubject(customer.getEmail())
+                    .withSubject(customer.getCustomerType().getDescription())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
             return token;

@@ -41,9 +41,15 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == UserRole.ADMIN)
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return switch (this.role) {
+            case ADMIN -> List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_FUNCTIONARY"),
+                    new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+            case FUNCTIONARY -> List.of(new SimpleGrantedAuthority("ROLE_FUNCIONARIO"),
+                    new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+            case CUSTOMER -> List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+            default -> throw new IllegalStateException("Unexpected value: " + this.role);
+        };
     }
 
     @Override

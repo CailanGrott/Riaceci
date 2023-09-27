@@ -14,8 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
+
+import static com.cailangrott.riaceci.customer.mapper.CustomerMapper.*;
 
 @Service
 @AllArgsConstructor
@@ -36,12 +37,12 @@ public class CustomerService {
 
         CustomerModel customer = CustomerMapper.mapDtoToCustomer(addNewCustomerOutput);
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        customer.setRole(UserRole.USER);
+        customer.setRole(UserRole.CUSTOMER);
         customer = customerRepository.saveAndFlush(customer);
 
         createUserFromCustomer(customer);
 
-        return CustomerMapper.mapCustomerToNewCustomerDTO(customer);
+        return mapCustomerToNewCustomerDTO(customer);
     }
 
     public CustomerModel findCustomerById(Integer id) throws ResourceNotFoundException {
@@ -59,7 +60,7 @@ public class CustomerService {
                         "Cliente não encontrado",
                         "Nenhum cliente encontrado com o CNPJ: " + cnpj));
 
-        return CustomerMapper.mapCustomerToFindCustomerByCnpj(customer);
+        return mapCustomerToFindCustomerByCnpj(customer);
     }
 
     public FindCustomerByName findCustomerByName(String name) throws ResourceNotFoundException {
@@ -68,7 +69,7 @@ public class CustomerService {
                         HttpStatus.NOT_FOUND,
                         "Cliente não encontrado",
                         "Nenhum cliente encontrado com o nome: " + name));
-        return CustomerMapper.mapCustomerToFindCustomerByName(customer);
+        return mapCustomerToFindCustomerByName(customer);
     }
 
     public Iterable<FindAllCustomerDTO> findAllCustomer() {

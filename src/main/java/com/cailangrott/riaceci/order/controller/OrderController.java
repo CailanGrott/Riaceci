@@ -4,13 +4,10 @@ import com.cailangrott.riaceci.exception.ResourceNotFoundException;
 import com.cailangrott.riaceci.order.dto.CreateNewOrder;
 import com.cailangrott.riaceci.order.dto.GetOrderById;
 import com.cailangrott.riaceci.order.dto.GetOrdersByCustomerCnpj;
-import com.cailangrott.riaceci.order.dto.GetOrdersByCustomerName;
 import com.cailangrott.riaceci.order.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/orders")

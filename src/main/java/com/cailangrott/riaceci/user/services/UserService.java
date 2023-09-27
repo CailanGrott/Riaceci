@@ -25,10 +25,6 @@ public class UserService {
         return newUser;
     }
 
-    public UserDetails findByLogin(String login) {
-        return repository.findByLogin(login);
-    }
-
     public static class UserAlreadyExistsException extends RuntimeException {
         public UserAlreadyExistsException(String message) {
             super(message);

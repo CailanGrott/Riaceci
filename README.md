@@ -35,7 +35,7 @@ Também fornece recursos para autenticação e autorização de usuários.
         "role": "ADMIN"
       }
       ```
-      ```json
+      ```
       POST "/auth/login": Autentica o usuário.
       {
         "login": "exampleLogin",
@@ -45,7 +45,7 @@ Também fornece recursos para autenticação e autorização de usuários.
 
 2. **Clientes:**
     - Exemplo de endpoint:
-      ```json
+      ```
       POST "/customer/new-customer": Cria um novo cliente.
       {
         "name": "string",
@@ -55,19 +55,19 @@ Também fornece recursos para autenticação e autorização de usuários.
         "customerType": "Supermarket"
       }
       ```
-      ```json
+      ```
       GET "/customer/find-customers": Retorna todos os clientes.
       ```
-      ```json
+      ```
       GET "/customer/find-by-cnpj/{cnpj}": Retorna um cliente com base em seu CNPJ.
       ```
-      ```json
+      ```
       GET "/customer/find-by-name/{name}": Retorna um cliente com base em seu nome.
       ```
-      ```json
+      ```
       DELETE "/customer/delete-customer/id/{id}": Exclui um cliente com base em seu ID.
       ```
-      ```json
+      ```
       PUT "/customer/update-customer/id/{id}": Atualiza os dados de um cliente.
       {
         "name": "Cailan",
@@ -80,7 +80,7 @@ Também fornece recursos para autenticação e autorização de usuários.
 
 - **Produtos:**
     - Exemplo de endpoint:
-      ```json
+      ```
       POST "/products/new-product": Cria um novo produto.
       {
         "name": "string",
@@ -89,13 +89,13 @@ Também fornece recursos para autenticação e autorização de usuários.
         "image": "string"
       }
       ```
-      ```json
+      ```
       GET "/products/find-products": Retorna todos os produtos.
       ```
-      ```json
+      ```
       DELETE "/products/delete-product/id/{id}": Exclui um produto com base em seu ID.
       ```
-      ```json
+      ```
       PUT "/products/update-product/id/{id}": Atualiza os dados de um produto.
       {
         "name": "Pizza Prestígio",
@@ -108,7 +108,7 @@ Também fornece recursos para autenticação e autorização de usuários.
 
 - **Pedidos:**
     - Exemplo de endpoint:
-      ```json
+      ```
       POST "/products/new-product": Cria um novo produto.
       {
         "customerId": 1,
@@ -120,10 +120,10 @@ Também fornece recursos para autenticação e autorização de usuários.
         ]
       }
       ```
-      ```json
+      ```
       GET "/orders/find-order/id/{id}": Retorna um pedido com base em seu ID.
       ```
-      ```json
+      ```
       GET "/orders/find-order-by-cnpj/{cnpj}": Retorna pedidos com base no CNPJ do cliente.
       ```
 

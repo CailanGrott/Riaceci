@@ -27,7 +27,7 @@ Também fornece recursos para autenticação e autorização de usuários.
 
 1. **AuthenticationController**: Trata de questões de autenticação.
     - Exemplo de endpoint:
-      ```json lines
+      ```
       POST "/auth/register" Registra um novo usuário.
       {
         "login": "exampleLogin",

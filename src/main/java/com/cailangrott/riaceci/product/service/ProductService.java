@@ -58,7 +58,11 @@ public class ProductService {
 
     public void updateProduct(Integer id, UpdateProductOutput updateProductOutput) throws ResourceNotFoundException {
         var productReturn = validateProductAttributesUpdate(updateProductOutput,
-                productRepository.findById(id).orElseThrow());
+                productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Produto não encontrado",
+                        "Nenhum produto encontrado com o ID: " + id
+                )));
         productRepository.updateProductById(productReturn.getName(),
                 productReturn.getDescription(),
                 productReturn.getPrice(),

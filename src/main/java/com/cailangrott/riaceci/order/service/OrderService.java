@@ -104,7 +104,7 @@ public class OrderService {
         return mapToGetOrdersByCnpjResponseDto(customer, orders);
     }
 
-    private Integer getProductQuantity(CreateNewOrder order, Integer id) {
+    Integer getProductQuantity(CreateNewOrder order, Integer id) {
         return order.products().stream()
                 .filter(product -> product.id().equals(id))
                 .map(CreateNewOrder.Product::quantity)
@@ -112,7 +112,7 @@ public class OrderService {
                 .orElse(1);
     }
 
-    private List<Integer> getProductIds(CreateNewOrder order) {
+    List<Integer> getProductIds(CreateNewOrder order) {
         return order.products().stream()
                 .map(CreateNewOrder.Product::id)
                 .toList();

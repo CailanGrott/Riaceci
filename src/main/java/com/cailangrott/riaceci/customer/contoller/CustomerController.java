@@ -46,6 +46,12 @@ public class CustomerController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/delete-customer/cnpj/{cnpj}")
+    public ResponseEntity<Void> deleteCustomerByCnpj(@PathVariable("cnpj") String cnpj) throws ResourceNotFoundException {
+        customerService.deleteCustomerByCnpj(cnpj);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/update-customer/id/{id}")
     public ResponseEntity<Void> updateCustomer(@PathVariable("id") Integer id,
                                                @RequestBody UpdateCustomerDTO updateCustomerDTO) throws ResourceNotFoundException {

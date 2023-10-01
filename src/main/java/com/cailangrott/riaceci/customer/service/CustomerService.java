@@ -85,12 +85,29 @@ public class CustomerService {
                         "Cliente não encontrado",
                         "Nenhum cliente encontrado com o ID: " + id));
 
+        deleteUserByLogin(customerReturn.getCnpj());
+
+        customerRepository.delete(customerReturn);
+    }
+
+    public void deleteCustomerByCnpj(String cnpj) throws ResourceNotFoundException {
+        var customerReturn = customerRepository.findOptionalCustomerByCnpj(cnpj)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        HttpStatus.NOT_FOUND,
+                        "Cliente não encontrado",
+                        "Nenhum cliente encontrado com o CNPJ: " + cnpj));
+
+        deleteUserByLogin(customerReturn.getCnpj());
         customerRepository.delete(customerReturn);
     }
 
     public void updateCustomer(Integer id, UpdateCustomerDTO updateCustomerDTO) throws ResourceNotFoundException {
         var customerReturn = validateCustomerAttributesUpdate(updateCustomerDTO,
-                customerRepository.findById(id).orElseThrow());
+                customerRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                HttpStatus.NOT_FOUND,
+                                "Cliente não encontrado",
+                                "Nenhum cliente encontrado com o ID: " + id)));
         customerRepository.updateCustomerById(customerReturn.getName(),
                 customerReturn.getCnpj(),
                 customerReturn.getEmail(),
@@ -110,5 +127,12 @@ public class CustomerService {
     private void createUserFromCustomer(CustomerModel customer) {
         User user = new User(customer.getCnpj(), customer.getPassword(), customer.getRole());
         userRepository.save(user);
+    }
+
+    private void deleteUserByLogin(String login) {
+        User user = (User) userRepository.findByLogin(login);
+        if (user != null) {
+            userRepository.delete(user);
+        }
     }
 }

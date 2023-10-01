@@ -36,6 +36,8 @@ public class SecurityConfigurations {
                         //CUSTOMER
                         .requestMatchers(HttpMethod.POST, "/customer/new-customer").permitAll()
                         .requestMatchers(HttpMethod.GET, "/customer/find-customers").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/customer/find-by-cnpj/{cnpj}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/customer/find-by-name/{name}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/customer/update-customer/id/{id}").hasRole("CUSTOMER")
                         .requestMatchers(HttpMethod.DELETE, "/customer/delete-customer/id/{id}").hasRole("ADMIN")
 

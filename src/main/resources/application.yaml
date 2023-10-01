@@ -16,7 +16,7 @@ spring:
   data:
     redis:
       host: localhost
-      port: 8080
+      port: 5000
 
 api:
   security:
